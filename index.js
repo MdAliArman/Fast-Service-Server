@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 
@@ -17,17 +17,24 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const serviceCollection =client.db('fastService').collection('allServices');
+        const serviceCollection = client.db('fastService').collection('allServices');
 
-        app.get('/allservice', async (req, res)=>{
-            const query={}
-            const services= await serviceCollection.find(query).toArray();
+        app.get('/allservice', async (req, res) => {
+            const query = {}
+            const services = await serviceCollection.find(query).toArray();
             res.send(services)
-        })
-        app.get('/service', async (req, res)=>{
-            const query={}
-            const services= await serviceCollection.find(query).limit(3).toArray();
+        });
+        app.get('/service', async (req, res) => {
+            const query = {}
+            const services = await serviceCollection.find(query).limit(3).toArray();
             res.send(services)
+        });
+
+        app.get('/allservice/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query= {_id: new ObjectId(id)};
+            const service= await serviceCollection.findOne(query);
+            res.send(service)
         })
 
     } finally {
