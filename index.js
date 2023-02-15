@@ -37,11 +37,22 @@ async function run() {
             const service= await serviceCollection.findOne(query);
             res.send(service)
         });
+        app.get('/reviews', async(req, res)=>{
+            let query={};
+            if(req.query.reviewid){
+               query ={
+                reviewid : req.query.reviewid
+               }
+            }
+            const reviews= await reviewCollection.find(query).toArray();
+            res.send(reviews)
+        });
         app.post('/reviews', async(req, res)=>{
             const review=req.body;
             const result= await reviewCollection.insertOne(review);
             res.send(result)
-        })
+        });
+     
 
     } finally {
 
