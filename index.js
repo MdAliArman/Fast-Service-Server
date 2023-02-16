@@ -38,19 +38,19 @@ async function run() {
             const service = await serviceCollection.findOne(query);
             res.send(service)
         });
-      
-        // app.get('/reviews', async (req, res) => {
-        //     let query = {}
-        //     if (req.query.email) {
-        //         query = {
-        //             email: req.query.email
-        //         }
-        //     }
-        //     console.log(req.query)
-        //     const reviews = await reviewCollection.find(query).toArray();
-        //     console.log(reviews)
-        //     res.send(reviews)
-        // });
+    //   review Api
+        app.get('/reviews', async (req, res) => {
+            let query = {}
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            console.log(req.query)
+            const reviews = await reviewCollection.find(query).toArray();
+            console.log(reviews)
+            res.send(reviews)
+        });
         app.get('/reviews', async (req, res) => {
             const query = {};
             const reviews = await reviewCollection.find(query).toArray();
@@ -59,13 +59,6 @@ async function run() {
         app.get('/reviews/:id', async (req, res) => {
             const id= req.params.id
             const query = {reviewid: id};
-            console.log(query)
-            // if (req.query.reviewid) {
-            //     query = {
-            //         reviewid: req.query.reviewid
-            //     }
-            // }
-        
             const reviews = await reviewCollection.find(query).toArray();
             res.send(reviews)
         });
@@ -74,6 +67,13 @@ async function run() {
             const result = await reviewCollection.insertOne(review);
             res.send(result)
         });
+
+        app.delete('/reviews/:id', async(req, res)=>{
+            const id=req.params.id;
+            const query={_id:new ObjectId(id)}
+            const result= await reviewCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
     } finally {
