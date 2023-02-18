@@ -20,6 +20,7 @@ async function run() {
     try {
         const serviceCollection = client.db('fastService').collection('allServices');
         const reviewCollection = client.db('fastService').collection('review');
+        const teamCollection = client.db('fastService').collection('team');
 
         app.get('/allservice', async (req, res) => {
             const query = {}
@@ -38,7 +39,12 @@ async function run() {
             const service = await serviceCollection.findOne(query);
             res.send(service)
         });
-    //   review Api
+        app.post('/allservice', async (req, res) => {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.send(result)
+        })
+        //   review Api
         app.get('/reviews', async (req, res) => {
             let query = {}
             if (req.query.email) {
@@ -46,9 +52,8 @@ async function run() {
                     email: req.query.email
                 }
             }
-            console.log(req.query)
+
             const reviews = await reviewCollection.find(query).toArray();
-            console.log(reviews)
             res.send(reviews)
         });
         app.get('/reviews', async (req, res) => {
@@ -57,8 +62,8 @@ async function run() {
             res.send(reviews)
         });
         app.get('/reviews/:id', async (req, res) => {
-            const id= req.params.id
-            const query = {reviewid: id};
+            const id = req.params.id
+            const query = { reviewid: id };
             const reviews = await reviewCollection.find(query).toArray();
             res.send(reviews)
         });
@@ -68,13 +73,18 @@ async function run() {
             res.send(result)
         });
 
-        app.delete('/reviews/:id', async(req, res)=>{
-            const id=req.params.id;
-            const query={_id:new ObjectId(id)}
-            const result= await reviewCollection.deleteOne(query)
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await reviewCollection.deleteOne(query)
             res.send(result)
         })
-
+        //  Team
+        app.get('/team', async(req, res) => {
+            const query={}
+            const team= await teamCollection.find(query).toArray();
+            res.send(team)
+        })
 
     } finally {
 
